@@ -1,0 +1,29 @@
+trigger:
+  branches:
+    include:
+    - Test_Branch
+    - UI_Changes
+variables:
+  solution: EmployeeManagementSystem.sln
+  buildPlatform: Any CPU
+  buildConfiguration: Debug
+  imageName: windows-2019
+  projectPath: ''
+  artifactName: Ideploy-Drop
+pool:
+  vmImage: $(imageName)
+steps:
+- task: NuGetToolInstaller@1
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: $(solution)
+- task: VSBuild@1
+  inputs:
+    solution: $(solution)
+    platform: $(buildPlatform)
+    configuration: $(buildConfiguration)
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: $(Pipeline.Workspace)
+    artifactType: pipeline
+    artifactName: $(artifactName)
